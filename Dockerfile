@@ -1,7 +1,7 @@
 FROM node:16.14.2
 
 RUN apt-get update -y \
-    && apt-get install -y nano less groff vim
+    && apt-get install -y nano less groff vim expect
 
 # AWS CLIインストール
 RUN cd /opt \
