@@ -6,9 +6,9 @@ eval "$(shdotenv)"
 # EC2インスタンスの状態を取得。
 get_ec2_instance_state() {
     echo $( \
-        aws ec2 describe-instance-status \
+        aws ec2 describe-instances \
             --instance-ids $EC2_INSTANCE_ID \
-            --query InstanceStatuses[0].InstanceState.Name \
+            --query "Reservations[*].Instances[*].State.Name" \
             --output text \
     )
 }
