@@ -36,6 +36,17 @@ primary_private_subnet_id=$( \
 ) && echo "Primary Private Subnet ID: ${primary_private_subnet_id}" \
 && sed -i "/PRIMARY_PRIVATE_SUBNET_NAME/i PRIMARY_PRIVATE_SUBNET_ID=$primary_private_subnet_id" .env
 
+secondary_private_subnet_id=$( \
+  aws ec2 create-subnet \
+  --vpc-id ${vpc_id} \
+  --cidr-block 10.0.21.0/24 \
+  --tag-specification "ResourceType=subnet, Tags=[{Key=Name,Value=$SECONDARY_PRIVATE_SUBNET_NAME}]" \
+  --availability-zone ${SECONDARY_ZONE_NAME} \
+  --query Subnet.SubnetId \
+  --output text \
+) && echo "Secondary Private Subnet ID: ${secondary_private_subnet_id}" \
+&& sed -i "/SECONDARY_PRIVATE_SUBNET_NAME/i SECONDARY_PRIVATE_SUBNET_ID=$secondary_private_subnet_id" .env
+
 # インターネットゲートウェイを作成しつつ、
 # 返り値のインターネットゲートウェイIDを変数に格納、envファイルに追記。
 internet_gateway_id=$( \
