@@ -72,7 +72,7 @@ expect {
   -glob \"ec2-user@*\" {
     sleep 2
     log_user 1
-    send \"sudo /usr/local/bin/wp core download --locale=ja --path=/var/www/html\n\"
+    send \"sudo /usr/local/bin/wp core download --locale=ja --path=$WP_PATH\n\"
   }
 }
 
