@@ -48,55 +48,7 @@ expect {
   -glob \"ec2-user@*\" {
     sleep 2
     log_user 1
-    send \"wget https://ja.wordpress.org/latest-ja.tar.gz\n\"
-  }
-}
-
-expect {
-  -glob \"ec2-user@*\" {
-    sleep 2
-    log_user 1
-    send \"tar xzf latest-ja.tar.gz\n\"
-  }
-}
-
-expect {
-  -glob \"ec2-user@*\" {
-    sleep 2
-    log_user 1
-    send \"sudo cp -r wordpress/* /var/www/html/\n\"
-  }
-}
-
-expect {
-  -glob \"ec2-user@*\" {
-    sleep 2
-    log_user 1
-    send \"sudo chown apache:apache /var/www/html/ -R\n\"
-  }
-}
-
-expect {
-  -glob \"ec2-user@*\" {
-    sleep 2
-    log_user 1
-    send \"sudo systemctl restart httpd.service\n\"
-  }
-}
-
-expect {
-  -glob \"ec2-user@*\" {
-    sleep 2
-    log_user 1
     send \"curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar\n\"
-  }
-}
-
-expect {
-  -glob \"ec2-user@*\" {
-    sleep 2
-    log_user 1
-    send \"php wp-cli.phar --info\n\"
   }
 }
 
@@ -113,6 +65,22 @@ expect {
     sleep 2
     log_user 1
     send \"sudo mv wp-cli.phar /usr/local/bin/wp\n\"
+  }
+}
+
+expect {
+  -glob \"ec2-user@*\" {
+    sleep 2
+    log_user 1
+    send \"sudo /usr/local/bin/wp core download --locale=ja --path=/var/www/html\n\"
+  }
+}
+
+expect {
+  -glob \"ec2-user@*\" {
+    sleep 2
+    log_user 1
+    send \"sudo systemctl restart httpd.service\n\"
   }
 }
 
