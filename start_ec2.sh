@@ -61,3 +61,38 @@ association_id=$( \
     --output text \
 ) && echo "Association Id: ${association_id}" \
 && sed -i "/# Elastic IP/a ASSOCIATION_ID=${association_id}" .env
+
+# EC2インスタンスへssh接続し、WordPressのURLを変更。
+# ドメインを取得し、EC2インスタンスと連携済である場合はこの処理は不要。
+expect -c "
+set timeout 10
+spawn ssh -oStrictHostKeyChecking=no -i ${HOME}/.ssh/${SSH_KEY_NAME}.pem ec2-user@${elastic_ip_address}
+expect {
+  -glob \"ec2-user@*\" {
+    log_user 1
+    send \"cd $WP_PATH\n\"
+  }
+}
+
+expect {
+  -glob \"ec2-user@*\" {
+    log_user 1
+    send \"sudo /usr/local/bin/wp option update home http://$elastic_ip_address\n\"
+  }
+}
+
+expect {
+  -glob \"ec2-user@*\" {
+    log_user 1
+    send \"sudo /usr/local/bin/wp option update siteurl http://$elastic_ip_address\n\"
+  }
+}
+
+expect {
+  -glob \"ec2-user@*\" {
+    log_user 1
+    send \"exit\n\"
+    exit 0
+  }
+}
+"
